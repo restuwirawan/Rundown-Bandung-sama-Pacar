@@ -3,809 +3,611 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Bandung Story</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400&family=Pinyon+Script&display=swap" rel="stylesheet">
+<title>Trip to Bandung — 3–5 Juli</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ════════════════════════════════════════
-   RESET & VARIABLES
-════════════════════════════════════════ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0D0A0E;--bg2:#130F16;--bg3:#1A141F;
-  --rose:#E8A0A8;--rose2:#C4686E;--rose3:#F5CDD0;
-  --gold:#D4A96A;--gold2:#F0C98A;--gold3:#8A6030;
-  --sage:#7A9E8A;--lavender:#9A8ABE;
-  --text:#F0E8E8;--muted:#9A8E92;--muted2:#6A5E62;
-  --card:rgba(255,255,255,0.03);
-  --card-border:rgba(232,160,168,0.12);
-  --card-hover:rgba(232,160,168,0.07);
-}
-html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(232,160,168,.2);border-radius:4px}
-
-/* ════════════════════════════════════════
-   BACKGROUND: STARS + ORBS + PETALS
-════════════════════════════════════════ */
-#stars-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55}
-.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(88px);animation:orbFloat ease-in-out infinite}
-.orb1{width:420px;height:420px;background:rgba(196,104,110,.07);top:-8%;left:-8%;animation-duration:20s}
-.orb2{width:360px;height:360px;background:rgba(154,138,190,.05);bottom:0;right:-5%;animation-duration:25s;animation-delay:-9s}
-.orb3{width:300px;height:300px;background:rgba(212,169,106,.04);top:40%;left:46%;animation-duration:17s;animation-delay:-5s}
-@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(28px,-18px) scale(1.04)}66%{transform:translate(-18px,28px) scale(.96)}}
-.petal{position:fixed;pointer-events:none;z-index:1;opacity:0;animation:petalFall linear infinite}
-@keyframes petalFall{0%{opacity:0;transform:translateY(-20px) rotate(0deg) translateX(0)}15%{opacity:.4}85%{opacity:.15}100%{opacity:0;transform:translateY(102vh) rotate(400deg) translateX(40px)}}
-
-/* ════════════════════════════════════════
-   LAYOUT
-════════════════════════════════════════ */
-.container{max-width:820px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
-
-/* ════════════════════════════════════════
-   FIREBASE STATUS BAR
-════════════════════════════════════════ */
-.status-bar{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:8px 20px;
-  background:rgba(13,10,14,.85);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--card-border);
-  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);
-  transition:all .3s;
-}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2);flex-shrink:0;transition:background .4s}
-.status-bar.connected .status-dot{background:#6ADBA0;box-shadow:0 0 8px rgba(106,219,160,.5)}
-.status-bar.connected{color:rgba(106,219,160,.7)}
-.status-bar.error .status-dot{background:#E87878;box-shadow:0 0 8px rgba(232,120,120,.5)}
-.status-bar.error{color:rgba(232,120,120,.7)}
-
-/* ════════════════════════════════════════
-   HERO
-════════════════════════════════════════ */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 0 60px;position:relative}
-.hero-eyebrow{font-family:'Pinyon Script',cursive;font-size:24px;color:var(--rose);margin-bottom:12px;opacity:0;animation:riseIn 1s ease forwards .3s}
-.hero-title{font-family:'Playfair Display',serif;font-size:clamp(52px,10vw,88px);font-weight:400;line-height:1;letter-spacing:-.02em;opacity:0;animation:riseIn 1.1s ease forwards .5s}
-.hero-city{font-family:'Playfair Display',serif;font-size:clamp(42px,8vw,72px);font-style:italic;color:var(--gold);line-height:1.1;opacity:0;animation:riseIn 1.1s ease forwards .7s}
-.hero-line{width:1px;height:60px;background:linear-gradient(180deg,var(--rose2),transparent);margin:28px auto;opacity:0;animation:riseIn 1s ease forwards .9s}
-.hero-tagline{font-size:13px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);opacity:0;animation:riseIn 1s ease forwards 1.1s}
-.scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted2);font-size:9px;letter-spacing:.2em;text-transform:uppercase;opacity:0;animation:riseIn 1s ease forwards 1.6s}
-.scroll-arrow{width:1px;height:30px;background:linear-gradient(180deg,transparent,var(--muted2));animation:scrollPulse 2s ease-in-out infinite}
-@keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
-@keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-
-/* ════════════════════════════════════════
-   MAIN CONTENT
-════════════════════════════════════════ */
-.main-content{padding:20px 0 80px}
-
-/* ── Section label ── */
-.section-label{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.section-label-text{font-size:9px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--rose2)}
-.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--card-border),transparent)}
-
-/* ── Info section ── */
-.info-section{margin-bottom:64px}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.info-card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px 22px;position:relative;overflow:hidden;transition:border-color .3s,background .3s}
-.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(232,160,168,.28),transparent)}
-.info-card:focus-within{border-color:rgba(232,160,168,.3);background:var(--card-hover)}
-.info-card-icon{font-size:18px;margin-bottom:10px;display:block}
-.info-card label{display:block;font-size:9px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px}
-.info-card input{width:100%;background:none;border:none;font-family:'Playfair Display',serif;font-size:17px;color:var(--text);outline:none;caret-color:var(--rose)}
-.info-card input::placeholder{color:var(--muted2);font-style:italic}
-
-/* ── Save trip info btn ── */
-.save-info-btn{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(212,169,106,.1);border:1px solid rgba(212,169,106,.25);
-  border-radius:100px;padding:9px 20px;margin-top:16px;
-  font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--gold2);cursor:pointer;transition:all .22s;
-}
-.save-info-btn:hover{background:rgba(212,169,106,.2);border-color:rgba(212,169,106,.45);transform:translateY(-1px)}
-
-/* ── Couple display ── */
-.couple-display{text-align:center;padding:36px 0;margin-bottom:48px;position:relative}
-.couple-display::before,.couple-display::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:55%;height:1px}
-.couple-display::before{top:0;background:linear-gradient(90deg,transparent,var(--card-border),transparent)}
-.couple-display::after{bottom:0;background:linear-gradient(90deg,transparent,var(--card-border),transparent)}
-.couple-names{font-family:'Pinyon Script',cursive;font-size:clamp(36px,7vw,56px);color:var(--rose3);line-height:1.2;text-shadow:0 0 60px rgba(232,160,168,.18)}
-.couple-names .amp{color:var(--gold);font-size:.82em;margin:0 14px}
-.couple-date-display{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:10px;font-weight:300}
-
-/* ════════════════════════════════════════
-   TIMELINE
-════════════════════════════════════════ */
-.timeline-section{}
-.timeline-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
-
-.add-btn{
-  display:flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,rgba(196,104,110,.15),rgba(154,138,190,.1));
-  border:1px solid rgba(232,160,168,.25);border-radius:100px;padding:10px 20px;
-  font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;
-  color:var(--rose3);cursor:pointer;transition:all .22s;
-}
-.add-btn:hover{background:linear-gradient(135deg,rgba(196,104,110,.28),rgba(154,138,190,.2));border-color:rgba(232,160,168,.5);transform:translateY(-1px);box-shadow:0 8px 24px rgba(196,104,110,.15)}
-
-.timeline{position:relative;padding-left:52px}
-.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent 0%,rgba(232,160,168,.2) 10%,rgba(212,169,106,.15) 50%,rgba(154,138,190,.2) 90%,transparent 100%)}
-
-/* Loading skeleton */
-.skeleton{animation:skPulse 1.6s ease-in-out infinite}
-@keyframes skPulse{0%,100%{opacity:.3}50%{opacity:.7}}
-.sk-card{background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:16px;padding:22px 26px;margin-bottom:16px;height:110px}
-
-/* Empty state */
-.empty-state{text-align:center;padding:80px 20px}
-.empty-script{font-family:'Pinyon Script',cursive;font-size:68px;color:rgba(232,160,168,.14);display:block;margin-bottom:14px;animation:heartbeat 3.5s ease-in-out infinite}
-@keyframes heartbeat{0%,100%{transform:scale(1);opacity:.14}50%{transform:scale(1.07);opacity:.22}}
-.empty-state p{font-size:13px;font-weight:300;color:var(--muted2);line-height:1.9;letter-spacing:.04em}
-
-/* ── Timeline item ── */
-.tl-item{position:relative;margin-bottom:16px;animation:itemIn .45s cubic-bezier(.34,1.56,.64,1) forwards}
-@keyframes itemIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
-.tl-dot-wrap{position:absolute;left:-52px;top:22px;display:flex;flex-direction:column;align-items:center;gap:5px}
-.tl-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--rose2);background:var(--bg);position:relative;flex-shrink:0;transition:all .2s}
-.tl-dot::after{content:'';position:absolute;inset:2px;border-radius:50%;background:var(--rose2);opacity:0;transition:opacity .2s}
-.tl-item:hover .tl-dot::after{opacity:1}
-/* dot colors */
-.tl-item[data-tag=wisata] .tl-dot{border-color:var(--sage)}.tl-item[data-tag=wisata] .tl-dot::after{background:var(--sage)}
-.tl-item[data-tag=belanja] .tl-dot{border-color:var(--lavender)}.tl-item[data-tag=belanja] .tl-dot::after{background:var(--lavender)}
-.tl-item[data-tag=hotel] .tl-dot{border-color:var(--gold)}.tl-item[data-tag=hotel] .tl-dot::after{background:var(--gold)}
-.tl-item[data-tag=transport] .tl-dot{border-color:#7AAAD0}.tl-item[data-tag=transport] .tl-dot::after{background:#7AAAD0}
-.tl-time-label{font-size:9px;color:var(--muted2);writing-mode:vertical-rl;transform:rotate(180deg);max-height:50px;overflow:hidden;line-height:1;letter-spacing:.04em;font-weight:300}
-
-/* ── Card ── */
-.tl-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px 26px;transition:all .22s;position:relative;overflow:hidden}
-.tl-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,169,106,.08),transparent)}
-.tl-card:hover{border-color:rgba(232,160,168,.22);background:var(--card-hover);transform:translateY(-2px);box-shadow:0 14px 42px rgba(0,0,0,.32)}
-.tl-card-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.tag-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:100px;border:1px solid;white-space:nowrap}
-.tag-makan{background:rgba(212,169,106,.1);border-color:rgba(212,169,106,.3);color:var(--gold2)}
-.tag-wisata{background:rgba(122,158,138,.1);border-color:rgba(122,158,138,.3);color:#9ABEA8}
-.tag-belanja{background:rgba(154,138,190,.1);border-color:rgba(154,138,190,.3);color:#BAA8D8}
-.tag-hotel{background:rgba(232,160,168,.1);border-color:rgba(232,160,168,.3);color:var(--rose3)}
-.tag-transport{background:rgba(122,170,208,.1);border-color:rgba(122,170,208,.3);color:#A8CCEC}
-.tag-lainnya{background:rgba(154,142,146,.1);border-color:rgba(154,142,146,.3);color:#C8B8BC}
-.card-actions{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
-.act-btn{background:none;border:1px solid rgba(255,255,255,.07);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;color:var(--muted2)}
-.act-btn.edit:hover{background:rgba(212,169,106,.12);border-color:rgba(212,169,106,.3);color:var(--gold2)}
-.act-btn.del:hover{background:rgba(232,100,100,.12);border-color:rgba(232,100,100,.3);color:#E88888}
-.tl-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:8px;line-height:1.35}
-.tl-loc-row{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:300;color:var(--muted);margin-bottom:6px;letter-spacing:.03em}
-.tl-note{font-size:12px;font-weight:300;color:var(--muted);line-height:1.7;border-left:2px solid rgba(232,160,168,.2);padding:4px 0 4px 12px;margin-top:8px;font-style:italic}
-.tl-time-badge{font-size:10px;color:var(--muted2);letter-spacing:.06em;font-weight:300}
-
-/* ════════════════════════════════════════
-   FOOTER
-════════════════════════════════════════ */
-.page-footer{border-top:1px solid var(--card-border);margin-top:56px;padding:32px 0 72px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.footer-left{display:flex;flex-direction:column;gap:4px}
-.footer-count{font-family:'Playfair Display',serif;font-size:30px;color:var(--rose);line-height:1}
-.footer-sub{font-size:10px;font-weight:300;letter-spacing:.15em;text-transform:uppercase;color:var(--muted2)}
-.footer-script{font-family:'Pinyon Script',cursive;font-size:22px;color:rgba(232,160,168,.22)}
-
-/* ════════════════════════════════════════
-   MODAL (TAMBAH / EDIT)
-════════════════════════════════════════ */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,7,12,.78);backdrop-filter:blur(14px);z-index:500;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.open{display:flex}
-.modal{background:#16101A;border:1px solid rgba(232,160,168,.18);border-radius:24px;padding:44px 40px;width:min(520px,100%);max-height:92vh;overflow-y:auto;position:relative;animation:modalPop .38s cubic-bezier(.34,1.56,.64,1) forwards;box-shadow:0 40px 120px rgba(0,0,0,.6)}
-.modal::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:55%;height:1px;background:linear-gradient(90deg,transparent,rgba(232,160,168,.4),transparent)}
-@keyframes modalPop{from{opacity:0;transform:scale(.92) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .18s}
-.modal-close:hover{background:rgba(232,120,120,.12);color:#E87878}
-.modal-eyebrow{font-family:'Pinyon Script',cursive;font-size:22px;color:var(--rose);text-align:center;margin-bottom:4px}
-.modal-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;text-align:center;margin-bottom:30px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
-.form-field{margin-bottom:18px}
-.form-field label{display:block;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--rose2);margin-bottom:7px}
-.form-field input,.form-field select,.form-field textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 15px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--text);outline:none;transition:border-color .2s,background .2s;appearance:none;caret-color:var(--rose)}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:rgba(232,160,168,.35);background:rgba(232,160,168,.04)}
-.form-field input::placeholder,.form-field textarea::placeholder{color:var(--muted2);font-style:italic}
-.form-field textarea{resize:none;min-height:80px;line-height:1.65}
-.form-field select option{background:#16101A}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
-.btn-cancel{background:none;border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;color:var(--muted);cursor:pointer;transition:all .2s}
-.btn-cancel:hover{border-color:rgba(255,255,255,.22);color:var(--text)}
-.btn-save{background:linear-gradient(135deg,#C4686E,#9A5EA0);border:none;border-radius:100px;padding:10px 28px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#FFE8F0;cursor:pointer;transition:all .22s;box-shadow:0 4px 16px rgba(196,104,110,.3)}
-.btn-save:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(196,104,110,.42);filter:brightness(1.08)}
-.btn-save:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* ════════════════════════════════════════
-   CONFIRM DELETE MODAL
-════════════════════════════════════════ */
-.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(10,7,12,.82);backdrop-filter:blur(14px);z-index:600;align-items:center;justify-content:center;padding:20px}
-.confirm-overlay.open{display:flex}
-.confirm-box{background:#16101A;border:1px solid rgba(232,100,100,.2);border-radius:20px;padding:40px 36px 32px;width:min(380px,100%);text-align:center;animation:modalPop .35s cubic-bezier(.34,1.56,.64,1) forwards;box-shadow:0 32px 100px rgba(0,0,0,.5)}
-.confirm-icon{font-family:'Pinyon Script',cursive;font-size:52px;color:rgba(232,100,100,.25);display:block;margin-bottom:10px}
-.confirm-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px}
-.confirm-sub{font-size:12px;font-weight:300;color:var(--muted);line-height:1.75;margin-bottom:26px}
-.confirm-name{color:var(--rose3);font-style:italic;font-weight:400}
-.confirm-actions{display:flex;gap:10px;justify-content:center}
-.btn-keep{background:none;border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:10px 22px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;color:var(--muted);cursor:pointer;transition:all .2s}
-.btn-keep:hover{color:var(--text);border-color:rgba(255,255,255,.22)}
-.btn-delete{background:linear-gradient(135deg,#A03040,#7A2038);border:none;border-radius:100px;padding:10px 26px;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;color:#FFD8DC;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(160,48,64,.3)}
-.btn-delete:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(160,48,64,.42)}
-.btn-delete:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* ════════════════════════════════════════
-   TOAST
-════════════════════════════════════════ */
-.toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%) translateY(12px);background:rgba(22,16,26,.96);border:1px solid rgba(232,160,168,.22);border-radius:100px;color:var(--rose3);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:12px 26px;opacity:0;pointer-events:none;z-index:999;transition:all .32s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;backdrop-filter:blur(10px)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.error-toast{border-color:rgba(232,120,120,.35);color:#F5A0A0}
-
-/* ════════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════════ */
-@media(max-width:560px){
-  .info-grid,.form-row{grid-template-columns:1fr}
-  .modal,.confirm-box{padding:30px 22px}
-  .timeline{padding-left:40px}.tl-dot-wrap{left:-40px}
-  .hero{min-height:90vh;padding-top:80px}
-  .page-footer{flex-direction:column;text-align:center}
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --cream: #F7F3EE;
+    --warm: #EDE6DC;
+    --dust: #D4C9B8;
+    --sage: #8A9E8C;
+    --blush: #C9A99A;
+    --terracotta: #B07060;
+    --deep: #3A2E28;
+    --mid: #7A6A60;
+    --light: #A89A90;
+  }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    background: var(--cream);
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+ 
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    background: var(--cream);
+    overflow: hidden;
+  }
+ 
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(176,112,96,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 20%, rgba(138,158,140,0.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+ 
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+ 
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--deep);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+ 
+  .hero-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+ 
+  .hero-sub {
+    font-size: 14px;
+    color: var(--mid);
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+ 
+  .hero-divider {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--dust), transparent);
+    margin: 2.5rem auto 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+ 
+  .scroll-hint {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
+  }
+ 
+  /* Budget strip */
+  .budget-strip {
+    background: var(--deep);
+    color: var(--cream);
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+ 
+  .budget-item {
+    text-align: center;
+  }
+ 
+  .budget-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 2px;
+  }
+ 
+  .budget-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+ 
+  .budget-value.accent { color: var(--blush); }
+ 
+  /* Section */
+  .section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+ 
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 0.75rem;
+  }
+ 
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 3rem;
+  }
+ 
+  /* Day blocks */
+  .day-block {
+    margin-bottom: 4rem;
+  }
+ 
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--dust);
+  }
+ 
+  .day-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--terracotta);
+    opacity: 0.4;
+  }
+ 
+  .day-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+ 
+  .day-info span {
+    font-size: 12px;
+    color: var(--light);
+    letter-spacing: 0.08em;
+  }
+ 
+  /* Schedule items */
+  .schedule-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+ 
+  .schedule-item {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    align-items: start;
+    gap: 1rem 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(212,201,184,0.4);
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+ 
+  .schedule-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+ 
+  .time-tag {
+    font-size: 12px;
+    color: var(--light);
+    letter-spacing: 0.05em;
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+ 
+  .item-content {}
+ 
+  .item-activity {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 2px;
+  }
+ 
+  .item-place {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--mid);
+  }
+ 
+  .item-price {
+    font-size: 13px;
+    color: var(--terracotta);
+    white-space: nowrap;
+    font-weight: 400;
+    padding-top: 2px;
+  }
+ 
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+ 
+  .tag-makan { background: rgba(201,169,154,0.15); color: var(--blush); }
+  .tag-wisata { background: rgba(138,158,140,0.15); color: var(--sage); }
+  .tag-belanja { background: rgba(176,112,96,0.12); color: var(--terracotta); }
+  .tag-hotel { background: rgba(58,46,40,0.08); color: var(--mid); }
+  .tag-santai { background: rgba(212,201,184,0.3); color: var(--light); }
+ 
+  /* Barang section */
+  .barang-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--dust);
+    border: 1px solid var(--dust);
+    overflow: hidden;
+    border-radius: 4px;
+  }
+ 
+  .barang-item {
+    background: var(--cream);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+ 
+  .barang-name {
+    font-size: 14px;
+    color: var(--deep);
+  }
+ 
+  .barang-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--terracotta);
+  }
+ 
+  /* Total footer */
+  .total-footer {
+    background: var(--warm);
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+ 
+  .total-footer p {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 0.5rem;
+  }
+ 
+  .total-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1;
+  }
+ 
+  .total-big span { color: var(--terracotta); }
+ 
+  .total-note {
+    font-size: 13px;
+    color: var(--light);
+    margin-top: 1rem;
+  }
+ 
+  /* Footer */
+  footer {
+    background: var(--deep);
+    color: rgba(247,243,238,0.4);
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+ 
+  footer strong { color: rgba(247,243,238,0.7); font-weight: 400; }
+ 
+  /* Decorative */
+  .ornament {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--dust);
+    margin: 2rem 0;
+    letter-spacing: 0.5em;
+  }
+ 
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+ 
+  @media (max-width: 600px) {
+    .schedule-item {
+      grid-template-columns: 90px 1fr;
+    }
+    .item-price {
+      grid-column: 2;
+      margin-top: -4px;
+    }
+    .budget-strip { gap: 1.5rem; }
+  }
 </style>
 </head>
 <body>
-
-<!-- BACKGROUND -->
-<canvas id="stars-canvas"></canvas>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
-
-<!-- STATUS BAR -->
-<div class="status-bar" id="status-bar">
-  <div class="status-dot" id="status-dot"></div>
-  <span id="status-text">Menghubungkan ke Firebase…</span>
-</div>
-
-<div class="container">
-
-  <!-- ── HERO ── -->
-  <section class="hero">
-    <p class="hero-eyebrow">Our Story Begins Here</p>
-    <h1 class="hero-title">Date ke</h1>
-    <div class="hero-city">Bandung</div>
-    <div class="hero-line"></div>
-    <p class="hero-tagline">Setiap detik bersamamu adalah surga</p>
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <div class="scroll-arrow"></div>
-    </div>
-  </section>
-
-  <!-- ── MAIN ── -->
-  <div class="main-content">
-
-    <!-- INFO SECTION -->
-    <div class="info-section">
-      <div class="section-label"><span class="section-label-text">Detail Perjalanan</span></div>
-      <div class="info-grid">
-        <div class="info-card">
-          <span class="info-card-icon">🗓</span>
-          <label>Tanggal Perjalanan</label>
-          <input type="text" id="trip-date" placeholder="14 Februari 2025…">
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">✈️</span>
-          <label>Berangkat Dari</label>
-          <input type="text" id="trip-from" placeholder="Jakarta…">
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">🌹</span>
-          <label>Namamu</label>
-          <input type="text" id="trip-me" placeholder="Namamu…">
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">💕</span>
-          <label>Nama Pasangan</label>
-          <input type="text" id="trip-partner" placeholder="Nama tersayang…">
-        </div>
-      </div>
-      <button class="save-info-btn" onclick="saveInfo()">
-        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 2h8l2 2v8a1 1 0 01-1 1H3a1 1 0 01-1-1V2z"/>
-          <rect x="5" y="8" width="4" height="4"/><rect x="4" y="2" width="6" height="3"/>
-        </svg>
-        Simpan Info Perjalanan
-      </button>
-    </div>
-
-    <!-- COUPLE DISPLAY -->
-    <div class="couple-display">
-      <div class="couple-names">
-        <span id="name-me">Kamu</span>
-        <span class="amp">&amp;</span>
-        <span id="name-partner">Dia</span>
-      </div>
-      <div class="couple-date-display" id="date-display">Menuju kenangan indah</div>
-    </div>
-
-    <!-- TIMELINE -->
-    <div class="timeline-section">
-      <div class="timeline-header">
-        <div class="section-label" style="flex:1;margin-bottom:0">
-          <span class="section-label-text">Rundown Momen</span>
-        </div>
-        <button class="add-btn" onclick="openModal()">
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-            <line x1="5.5" y1="1" x2="5.5" y2="10"/><line x1="1" y1="5.5" x2="10" y2="5.5"/>
-          </svg>
-          Tambah Momen
-        </button>
-      </div>
-
-      <div class="timeline" id="timeline">
-        <!-- Loading skeleton -->
-        <div id="loading-skeleton">
-          <div class="sk-card skeleton"></div>
-          <div class="sk-card skeleton" style="opacity:.6"></div>
-          <div class="sk-card skeleton" style="opacity:.3"></div>
-        </div>
-        <!-- Empty state (hidden initially) -->
-        <div class="empty-state" id="empty-state" style="display:none">
-          <span class="empty-script">♡</span>
-          <p>Belum ada momen yang direncanakan.<br>Mulai tuliskan kegiatan spesial kalian berdua.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="page-footer">
-      <div class="footer-left">
-        <div class="footer-count" id="count">—</div>
-        <div class="footer-sub">momen tercatat</div>
-      </div>
-      <div class="footer-script" id="footer-names">Kamu &amp; Dia</div>
-    </div>
-
-  </div><!-- /main-content -->
-</div><!-- /container -->
-
-<!-- ══ MODAL TAMBAH / EDIT ══ -->
-<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <line x1="1" y1="1" x2="10" y2="10"/><line x1="10" y1="1" x2="1" y2="10"/>
-      </svg>
-    </button>
-    <p class="modal-eyebrow" id="modal-eyebrow">Tambahkan</p>
-    <h2 class="modal-title" id="modal-title">Momen Baru</h2>
-
-    <div class="form-row">
-      <div class="form-field">
-        <label>Waktu</label>
-        <input type="time" id="m-time">
-      </div>
-      <div class="form-field">
-        <label>Kategori</label>
-        <select id="m-tag">
-          <option value="makan">🍽 Makan &amp; Kafe</option>
-          <option value="wisata">🌿 Wisata &amp; Jalan</option>
-          <option value="belanja">🛍 Belanja</option>
-          <option value="hotel">🏨 Hotel &amp; Istirahat</option>
-          <option value="transport">🚗 Transport</option>
-          <option value="lainnya">✨ Lainnya</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-field">
-      <label>Nama Kegiatan</label>
-      <input type="text" id="m-name" placeholder="cth. Makan malam di rooftop Dago…">
-    </div>
-    <div class="form-field">
-      <label>Lokasi</label>
-      <input type="text" id="m-loc" placeholder="cth. Jl. Dago Pakar, Bandung">
-    </div>
-    <div class="form-field">
-      <label>Catatan &amp; Tips</label>
-      <textarea id="m-note" placeholder="Reservasi, dress code, hal yang perlu dipersiapkan…"></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Batal</button>
-      <button class="btn-save" id="btn-save" onclick="saveItem()">Simpan Momen</button>
-    </div>
+ 
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">3 – 5 Juli · Kota Bandung</p>
+  <h1 class="hero-title">Bandung<br><em>Trip</em></h1>
+  <p class="hero-sub">Bandung berdua — kalau nyasar ya nyasar bareng</p>
+  <div class="hero-divider"></div>
+  <p class="scroll-hint">Scroll untuk rundown</p>
+</section>
+ 
+<!-- BUDGET STRIP -->
+<div class="budget-strip">
+  <div class="budget-item">
+    <span class="budget-label">Total Destinasi</span>
+    <span class="budget-value">Rp 1.150.000</span>
+  </div>
+  <div class="budget-item">
+    <span class="budget-label">Total Barang & Bensin</span>
+    <span class="budget-value">Rp 810.000</span>
+  </div>
+  <div class="budget-item">
+    <span class="budget-label">Total Keseluruhan</span>
+    <span class="budget-value accent">Rp 1.960.000</span>
   </div>
 </div>
-
-<!-- ══ CONFIRM DELETE ══ -->
-<div class="confirm-overlay" id="confirm-overlay" onclick="handleConfirmBg(event)">
-  <div class="confirm-box">
-    <span class="confirm-icon">✗</span>
-    <h3 class="confirm-title">Hapus Momen Ini?</h3>
-    <p class="confirm-sub">
-      Kamu akan menghapus momen:<br>
-      <span class="confirm-name" id="confirm-name">—</span><br>
-      Data akan hilang dari Firebase secara permanen.
+ 
+<!-- SCHEDULE -->
+<div class="section">
+  <p class="section-label">Itinerary</p>
+  <h2 class="section-title">Rundown<br>Perjalanan</h2>
+ 
+  <!-- DAY 1 -->
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-number">01</span>
+      <div class="day-info">
+        <h3>Hari Pertama — Jumat</h3>
+        <span>3 Juli 2025 · Tiba & Eksplor</span>
+      </div>
+    </div>
+    <ul class="schedule-list">
+      <li class="schedule-item">
+        <span class="time-tag">05.00 – 09.00</span>
+        <div class="item-content">
+          <p class="item-activity">Tracking Pagi</p>
+          <p class="item-place">Sunan Ibu</p>
+          <span class="tag tag-wisata">Wisata</span>
+        </div>
+        <span class="item-price">180.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">10.00 – 11.00</span>
+        <div class="item-content">
+          <p class="item-activity">Makan Siang</p>
+          <p class="item-place">RM. Pawon Kang Bima</p>
+          <span class="tag tag-makan">Makan</span>
+        </div>
+        <span class="item-price">100.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">13.00 – 16.00</span>
+        <div class="item-content">
+          <p class="item-activity">Seru-seruan ATV</p>
+          <p class="item-place">Noah's Park</p>
+          <span class="tag tag-wisata">Wisata</span>
+        </div>
+        <span class="item-price">150.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">19.00 – …</span>
+        <div class="item-content">
+          <p class="item-activity">Check-in Hotel</p>
+          <p class="item-place">Sky Garden by Roomate Inn</p>
+          <span class="tag tag-hotel">Hotel</span>
+        </div>
+        <span class="item-price">330.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">21.00</span>
+        <div class="item-content">
+          <p class="item-activity">Makan Malam</p>
+          <p class="item-place">Pinggiran Aja</p>
+          <span class="tag tag-makan">Makan Malem</span>
+        </div>
+        <span class="item-price">60.000</span>
+      </li>
+    </ul>
+  </div>
+ 
+  <div class="ornament">· · ·</div>
+ 
+  <!-- DAY 2 -->
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-number">02</span>
+      <div class="day-info">
+        <h3>Hari Kedua — Sabtu</h3>
+        <span>4 Juli 2025 · Market & Braga</span>
+      </div>
+    </div>
+    <ul class="schedule-list">
+      <li class="schedule-item">
+        <span class="time-tag">09.00 – 10.00</span>
+        <div class="item-content">
+          <p class="item-activity">Sarapan</p>
+          <p class="item-place">Gatau</p>
+          <span class="tag tag-makan">Makan</span>
+        </div>
+        <span class="item-price">60.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">16.00 – 17.30</span>
+        <div class="item-content">
+          <p class="item-activity">Beli Perintilan</p>
+          <p class="item-place">Sloopy Market</p>
+          <span class="tag tag-belanja">Belanja</span>
+        </div>
+        <span class="item-price">50.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">19.00 – 20.30</span>
+        <div class="item-content">
+          <p class="item-activity">Makan Malam</p>
+          <p class="item-place">Braga City</p>
+          <span class="tag tag-makan">Makan Malem</span>
+        </div>
+        <span class="item-price">80.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">20.30 – 21.00</span>
+        <div class="item-content">
+          <p class="item-activity">Photobooth</p>
+          <p class="item-place">Braga City</p>
+          <span class="tag tag-santai">Foto</span>
+        </div>
+        <span class="item-price">35.000</span>
+      </li>
+    </ul>
+  </div>
+ 
+  <div class="ornament">· · ·</div>
+ 
+  <!-- DAY 3 -->
+  <div class="day-block">
+    <div class="day-header">
+      <span class="day-number">03</span>
+      <div class="day-info">
+        <h3>Hari Ketiga — Minggu</h3>
+        <span>5 Juli 2025 · Penutup yang Santai</span>
+      </div>
+    </div>
+    <ul class="schedule-list">
+      <li class="schedule-item">
+        <span class="time-tag">12.00 – 13.00</span>
+        <div class="item-content">
+          <p class="item-activity">Photobooth</p>
+          <p class="item-place">Asana (Buah Batu)</p>
+          <span class="tag tag-santai">Foto</span>
+        </div>
+        <span class="item-price">35.000</span>
+      </li>
+      <li class="schedule-item">
+        <span class="time-tag">14.00 – …</span>
+        <div class="item-content">
+          <p class="item-activity">Nongki Sebelum Pulang</p>
+          <p class="item-place">Istirahat Aja Sebelum Balik</p>
+          <span class="tag tag-santai">Santai</span>
+        </div>
+        <span class="item-price">70.000</span>
+      </li>
+    </ul>
+  </div>
+</div>
+ 
+<!-- BARANG SECTION -->
+<div style="background: var(--warm); padding: 0.5rem 0 4rem;">
+  <div class="section" style="padding-top: 4rem; padding-bottom: 0;">
+    <p class="section-label">Persiapan</p>
+    <h2 class="section-title">Barang &<br>Keperluan</h2>
+    <div class="barang-grid">
+      <div class="barang-item">
+        <span class="barang-name">Jajan (Restu)</span>
+        <span class="barang-price">60.000</span>
+      </div>
+      <div class="barang-item">
+        <span class="barang-name">Bensin</span>
+        <span class="barang-price">300.000</span>
+      </div>
+      <div class="barang-item">
+        <span class="barang-name">Printilan Patuha</span>
+        <span class="barang-price">50.000</span>
+      </div>
+      <div class="barang-item">
+        <span class="barang-name">Jajanan Perjalanan</span>
+        <span class="barang-price">200.000</span>
+      </div>
+      <div class="barang-item">
+        <span class="barang-name">Dana Darurat</span>
+        <span class="barang-price">200.000</span>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--light); margin-top: 1rem; text-align: right;">
+      Subtotal barang: <strong style="color: var(--terracotta);">Rp 810.000</strong>
     </p>
-    <div class="confirm-actions">
-      <button class="btn-keep" onclick="closeConfirm()">Batal</button>
-      <button class="btn-delete" id="btn-delete-confirm" onclick="confirmDelete()">Ya, Hapus</button>
-    </div>
   </div>
 </div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- ══════════════════════════════════════
-     FIREBASE SDK (v9 compat)
-══════════════════════════════════════ -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
+ 
+<!-- TOTAL -->
+<div class="total-footer">
+  <p>Total Pengeluaran</p>
+  <div class="total-big">Rp <span>1.960</span>.000</div>
+  <p class="total-note">Destinasi 1.150.000 + Barang 810.000</p>
+</div>
+ 
+<!-- FOOTER -->
+<footer>
+  <strong>Bandung Trip</strong> · 3–5 Juli · I love You Shiva ✦
+</footer>
+ 
 <script>
-/* ════════════════════════════════════════
-   🔥 FIREBASE CONFIG
-   ── Ganti dengan config project kamu ──
-════════════════════════════════════════ */
-const firebaseConfig = {
-  apiKey:            "GANTI_DENGAN_API_KEY_KAMU",
-  authDomain:        "GANTI_DENGAN_AUTH_DOMAIN",
-  databaseURL:       "GANTI_DENGAN_DATABASE_URL",
-  projectId:         "GANTI_DENGAN_PROJECT_ID",
-  storageBucket:     "GANTI_DENGAN_STORAGE_BUCKET",
-  messagingSenderId: "GANTI_DENGAN_SENDER_ID",
-  appId:             "GANTI_DENGAN_APP_ID"
-};
-
-/* ════════════════════════════════════════
-   INIT FIREBASE
-════════════════════════════════════════ */
-firebase.initializeApp(firebaseConfig);
-const db        = firebase.database();
-const refInfo   = db.ref('tripInfo');    // satu objek info perjalanan
-const refMoments= db.ref('moments');    // koleksi momen/kegiatan
-
-/* ════════════════════════════════════════
-   CONSTANTS
-════════════════════════════════════════ */
-const TAG_LABELS = {
-  makan:'Makan & Kafe', wisata:'Wisata & Jalan',
-  belanja:'Belanja',    hotel:'Hotel & Istirahat',
-  transport:'Transport',lainnya:'Lainnya'
-};
-const TAG_EMOJI = {
-  makan:'🍽', wisata:'🌿', belanja:'🛍',
-  hotel:'🏨', transport:'🚗', lainnya:'✨'
-};
-
-/* ════════════════════════════════════════
-   STATE
-════════════════════════════════════════ */
-let currentEditId = null;
-let pendingDeleteId = null;
-let localItems = {}; // snapshot dari Firebase
-
-/* ════════════════════════════════════════
-   CONNECTION STATUS
-════════════════════════════════════════ */
-db.ref('.info/connected').on('value', snap => {
-  const bar  = document.getElementById('status-bar');
-  const dot  = document.getElementById('status-dot');
-  const text = document.getElementById('status-text');
-  if (snap.val() === true) {
-    bar.className  = 'status-bar connected';
-    text.textContent = 'Terhubung ke Firebase';
-    setTimeout(() => { bar.style.opacity = '0'; bar.style.pointerEvents = 'none'; }, 3000);
-  } else {
-    bar.style.opacity = '1'; bar.style.pointerEvents = '';
-    bar.className  = 'status-bar error';
-    text.textContent = 'Tidak ada koneksi — data mungkin belum tersimpan';
-  }
-});
-
-/* ════════════════════════════════════════
-   REAL-TIME LISTENER — TRIP INFO
-════════════════════════════════════════ */
-refInfo.on('value', snap => {
-  const info = snap.val() || {};
-  document.getElementById('trip-date').value    = info.date    || '';
-  document.getElementById('trip-from').value    = info.from    || '';
-  document.getElementById('trip-me').value      = info.me      || '';
-  document.getElementById('trip-partner').value = info.partner || '';
-  updateCouple(info.me, info.partner, info.date);
-});
-
-/* ════════════════════════════════════════
-   REAL-TIME LISTENER — MOMENTS
-════════════════════════════════════════ */
-refMoments.on('value', snap => {
-  // Remove skeleton
-  const skel = document.getElementById('loading-skeleton');
-  if (skel) skel.remove();
-
-  localItems = snap.val() || {};
-  renderTimeline();
-});
-
-/* ════════════════════════════════════════
-   COUPLE DISPLAY
-════════════════════════════════════════ */
-function updateCouple(me, partner, date) {
-  document.getElementById('name-me').textContent      = me      || 'Kamu';
-  document.getElementById('name-partner').textContent = partner || 'Dia';
-  document.getElementById('date-display').textContent = date    || 'Menuju kenangan indah';
-  document.getElementById('footer-names').textContent = `${me||'Kamu'} & ${partner||'Dia'}`;
-}
-
-/* ════════════════════════════════════════
-   SAVE TRIP INFO → FIREBASE
-════════════════════════════════════════ */
-function saveInfo() {
-  const info = {
-    date:    document.getElementById('trip-date').value.trim(),
-    from:    document.getElementById('trip-from').value.trim(),
-    me:      document.getElementById('trip-me').value.trim(),
-    partner: document.getElementById('trip-partner').value.trim()
-  };
-  refInfo.set(info)
-    .then(() => toast('Info perjalanan disimpan 🌸'))
-    .catch(e  => toast('Gagal simpan: ' + e.message, true));
-  updateCouple(info.me, info.partner, info.date);
-}
-
-/* ════════════════════════════════════════
-   RENDER TIMELINE
-════════════════════════════════════════ */
-function renderTimeline() {
-  const tl    = document.getElementById('timeline');
-  const empty = document.getElementById('empty-state');
-
-  // Sort by time
-  const sorted = Object.entries(localItems)
-    .map(([key, val]) => ({ ...val, _key: key }))
-    .sort((a, b) => (a.time || 'zz').localeCompare(b.time || 'zz'));
-
-  document.getElementById('count').textContent = sorted.length;
-
-  if (!sorted.length) {
-    tl.innerHTML = '';
-    tl.appendChild(empty);
-    empty.style.display = '';
-    return;
-  }
-
-  empty.style.display = 'none';
-
-  // Keep empty-state DOM, rebuild items
-  tl.innerHTML = '';
-  tl.appendChild(empty);
-
-  sorted.forEach(it => {
-    const div = document.createElement('div');
-    div.className = 'tl-item';
-    div.id = 'item-' + it._key;
-    div.setAttribute('data-tag', it.tag || 'lainnya');
-    div.innerHTML = buildCard(it);
-    tl.appendChild(div);
-  });
-}
-
-function buildCard(it) {
-  const tag   = it.tag || 'lainnya';
-  const emoji = TAG_EMOJI[tag] || '✨';
-  const label = TAG_LABELS[tag] || tag;
-  return `
-    <div class="tl-dot-wrap">
-      <div class="tl-dot"></div>
-      ${it.time ? `<div class="tl-time-label">${fmtTime(it.time)}</div>` : ''}
-    </div>
-    <div class="tl-card">
-      <div class="tl-card-top">
-        <span class="tag-badge tag-${esc(tag)}">${emoji} ${esc(label)}</span>
-        ${it.time ? `<span class="tl-time-badge">${fmtTime(it.time)}</span>` : ''}
-        <div class="card-actions">
-          <button class="act-btn edit" onclick="openModal('${it._key}')" title="Edit momen">
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z"/>
-            </svg>
-          </button>
-          <button class="act-btn del" onclick="askDelete('${it._key}','${esc(it.name)}')" title="Hapus momen">
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="2,4 12,4"/><path d="M5 4V2h4v2"/><path d="M3 4l1 9h6l1-9"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="tl-name">${esc(it.name)}</div>
-      ${it.loc  ? `<div class="tl-loc-row"><span>📍</span><span>${esc(it.loc)}</span></div>` : ''}
-      ${it.note ? `<div class="tl-note">${esc(it.note)}</div>` : ''}
-    </div>`;
-}
-
-/* ════════════════════════════════════════
-   OPEN / CLOSE MODAL
-════════════════════════════════════════ */
-function openModal(key) {
-  currentEditId = key || null;
-  const eyebrow = document.getElementById('modal-eyebrow');
-  const title   = document.getElementById('modal-title');
-
-  if (key && localItems[key]) {
-    const it = localItems[key];
-    eyebrow.textContent = 'Ubah';
-    title.textContent   = 'Edit Momen';
-    document.getElementById('m-time').value = it.time || '';
-    document.getElementById('m-tag').value  = it.tag  || 'lainnya';
-    document.getElementById('m-name').value = it.name || '';
-    document.getElementById('m-loc').value  = it.loc  || '';
-    document.getElementById('m-note').value = it.note || '';
-  } else {
-    eyebrow.textContent = 'Tambahkan';
-    title.textContent   = 'Momen Baru';
-    ['m-time','m-name','m-loc','m-note'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('m-tag').value = 'makan';
-  }
-
-  document.getElementById('modal-overlay').classList.add('open');
-  setTimeout(() => document.getElementById('m-name').focus(), 120);
-}
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  currentEditId = null;
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-}
-
-/* ════════════════════════════════════════
-   SAVE (CREATE / UPDATE) → FIREBASE
-════════════════════════════════════════ */
-function saveItem() {
-  const name = document.getElementById('m-name').value.trim();
-  if (!name) { document.getElementById('m-name').focus(); toast('Nama momen wajib diisi ✦'); return; }
-
-  const data = {
-    time: document.getElementById('m-time').value,
-    tag:  document.getElementById('m-tag').value,
-    name,
-    loc:  document.getElementById('m-loc').value.trim(),
-    note: document.getElementById('m-note').value.trim(),
-    updatedAt: Date.now()
-  };
-
-  const btn = document.getElementById('btn-save');
-  btn.disabled = true;
-  btn.textContent = 'Menyimpan…';
-
-  let promise;
-  if (currentEditId) {
-    // UPDATE existing
-    promise = refMoments.child(currentEditId).update(data);
-  } else {
-    // CREATE new — Firebase push() generates unique key
-    data.createdAt = Date.now();
-    promise = refMoments.push(data);
-  }
-
-  promise
-    .then(() => {
-      closeModal();
-      toast(currentEditId ? 'Momen diperbarui 🌸' : 'Momen ditambahkan 🌸');
-    })
-    .catch(e => toast('Gagal simpan: ' + e.message, true))
-    .finally(() => {
-      btn.disabled = false;
-      btn.textContent = 'Simpan Momen';
+  const items = document.querySelectorAll('.schedule-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
     });
-}
-
-/* ════════════════════════════════════════
-   DELETE → FIREBASE
-════════════════════════════════════════ */
-function askDelete(key, name) {
-  pendingDeleteId = key;
-  document.getElementById('confirm-name').textContent = name;
-  document.getElementById('confirm-overlay').classList.add('open');
-}
-
-function closeConfirm() {
-  document.getElementById('confirm-overlay').classList.remove('open');
-  pendingDeleteId = null;
-}
-
-function handleConfirmBg(e) {
-  if (e.target === document.getElementById('confirm-overlay')) closeConfirm();
-}
-
-function confirmDelete() {
-  if (!pendingDeleteId) return;
-  const btn = document.getElementById('btn-delete-confirm');
-  btn.disabled = true;
-  btn.textContent = 'Menghapus…';
-
-  refMoments.child(pendingDeleteId).remove()
-    .then(() => {
-      closeConfirm();
-      toast('Momen dihapus ✦');
-    })
-    .catch(e => toast('Gagal hapus: ' + e.message, true))
-    .finally(() => {
-      btn.disabled = false;
-      btn.textContent = 'Ya, Hapus';
-    });
-}
-
-/* ════════════════════════════════════════
-   UTILS
-════════════════════════════════════════ */
-function esc(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function fmtTime(t) {
-  if (!t) return '';
-  const [h, m] = t.split(':');
-  return `${h}.${m}`;
-}
-
-function toast(msg, isError = false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast' + (isError ? ' error-toast' : '');
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2800);
-}
-
-/* ════════════════════════════════════════
-   STARS ANIMATION
-════════════════════════════════════════ */
-(function(){
-  const c = document.getElementById('stars-canvas'), ctx = c.getContext('2d');
-  let stars = [];
-  function resize(){ c.width = window.innerWidth; c.height = window.innerHeight; }
-  function init(){
-    resize(); stars = [];
-    const n = Math.floor(c.width * c.height / 8000);
-    for (let i = 0; i < n; i++) stars.push({
-      x: Math.random()*c.width, y: Math.random()*c.height,
-      r: Math.random()*1.2+.2, o: Math.random()*.55+.1,
-      s: Math.random()*.008+.002, p: Math.random()*Math.PI*2
-    });
-  }
-  function draw(){
-    ctx.clearRect(0,0,c.width,c.height);
-    const t = Date.now()*.001;
-    stars.forEach(s => {
-      const o = s.o*(.6+.4*Math.sin(t*s.s*10+s.p));
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(240,218,218,${o})`; ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize', init);
-  init(); draw();
-})();
-
-/* ════════════════════════════════════════
-   PETALS ANIMATION
-════════════════════════════════════════ */
-(function(){
-  const emojis = ['🌸','✿','❀','🌺'];
-  function spawn(){
-    const p = document.createElement('div');
-    p.className = 'petal';
-    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    p.style.left = Math.random()*100+'vw';
-    p.style.fontSize = (8+Math.random()*8)+'px';
-    p.style.animationDuration = (12+Math.random()*16)+'s';
-    p.style.animationDelay = (Math.random()*4)+'s';
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(), 32000);
-  }
-  setInterval(spawn, 3500);
-  spawn(); spawn();
-})();
+  }, { threshold: 0.1 });
+ 
+  items.forEach(item => observer.observe(item));
 </script>
 </body>
 </html>
+ 
